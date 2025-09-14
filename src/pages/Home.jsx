@@ -12,7 +12,7 @@ const Home = () => {
       beds: 2,
       baths: 2,
       sqft: 440,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1592595896551-12b371d546d5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
       type: 'Rent'
     },
     {
@@ -23,7 +23,7 @@ const Home = () => {
       beds: 3,
       baths: 2,
       sqft: 4655,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1565953522043-baea26b83b7e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
       type: 'Rent'
     },
     {
@@ -34,7 +34,7 @@ const Home = () => {
       beds: 4,
       baths: 3,
       sqft: 400,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
       type: 'Buy'
     }
   ];
@@ -43,22 +43,22 @@ const Home = () => {
     {
       id: 1,
       title: 'Top 5 Mistakes to Avoid When Buying Property in Kenya',
-      image: '/api/placeholder/300/200'
+      image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGJsb2dzfGVufDB8fDB8fHww'
     },
     {
       id: 2,
       title: 'Is It Better to Rent or Buy Property in Kenya? A Practical Guide for 2025',
-      image: '/api/placeholder/300/200'
+      image: 'https://images.unsplash.com/photo-1657638338091-82589734018d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjN8fGJsb2dzfGVufDB8fDB8fHww'
     },
     {
       id: 3,
       title: 'A Step-by-Step Guide to Buying Land in Kenya Legally',
-      image: '/api/placeholder/300/200'
+      image: 'https://images.unsplash.com/photo-1640441710596-d0b5e22edaac?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzZ8fGJsb2dzfGVufDB8fDB8fHww'
     },
     {
       id: 4,
       title: '5 Fast-Growing Real Estate Hotspots in Nairobi (2025 Update)',
-      image: '/api/placeholder/300/200'
+      image: 'https://plus.unsplash.com/premium_photo-1674513559454-35ca6435079f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjF8fGJsb2dzfGVufDB8fDB8fHww'
     }
   ];
 

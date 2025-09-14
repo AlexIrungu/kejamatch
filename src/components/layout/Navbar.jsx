@@ -20,6 +20,7 @@ const Navbar = () => {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/properties', label: 'Properties' },
+    { path: '/bnbs', label: 'BNBs' },
     { path: '/blogs', label: 'Blogs' },
     { path: '/contact', label: 'Contact' },
   ];
@@ -66,9 +67,12 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-            <button className="bg-gradient-to-r from-secondary to-accent text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+            <Link 
+              to="/properties"
+              className="bg-gradient-to-r from-secondary to-accent text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+            >
               Browse Properties
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -105,9 +109,13 @@ const Navbar = () => {
                     {link.label}
                   </Link>
                 ))}
-                <button className="w-full bg-gradient-to-r from-secondary to-accent text-white px-6 py-3 rounded-lg font-semibold">
+                <Link 
+                  to="/properties"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full bg-gradient-to-r from-secondary to-accent text-white px-6 py-3 rounded-lg font-semibold text-center"
+                >
                   Browse Properties
-                </button>
+                </Link>
               </div>
             </motion.div>
           )}

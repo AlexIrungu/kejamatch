@@ -20,7 +20,7 @@ const Properties = () => {
       beds: 2,
       baths: 2,
       sqft: 440,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1592595896551-12b371d546d5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
       type: 'Rent',
       category: 'houses'
     },
@@ -32,7 +32,7 @@ const Properties = () => {
       beds: 3,
       baths: 2,
       sqft: 4655,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1565953522043-baea26b83b7e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
       type: 'Rent',
       category: 'apartments'
     },
@@ -44,7 +44,7 @@ const Properties = () => {
       beds: 4,
       baths: 3,
       sqft: 400,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
       type: 'Buy',
       category: 'houses'
     },
@@ -56,7 +56,7 @@ const Properties = () => {
       beds: 5,
       baths: 2,
       sqft: 500,
-      image: '/api/placeholder/400/300',
+      image: 'https://plus.unsplash.com/premium_photo-1734545294117-a910817d5961?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fHJlYWwlMjBlc3RhdGUlMjBwcm9wZXJ0aWVzfGVufDB8fDB8fHww',
       type: 'Buy',
       category: 'houses'
     },
@@ -68,7 +68,7 @@ const Properties = () => {
       beds: 3,
       baths: 2,
       sqft: 600,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1635108199095-f2db38e6632e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzh8fHJlYWwlMjBlc3RhdGUlMjBwcm9wZXJ0aWVzfGVufDB8fDB8fHww',
       type: 'Buy',
       category: 'apartments'
     },
@@ -80,7 +80,7 @@ const Properties = () => {
       beds: 5,
       baths: 1,
       sqft: 700,
-      image: '/api/placeholder/400/300',
+      image: 'https://images.unsplash.com/photo-1723110994499-df46435aa4b3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVhbCUyMGVzdGF0ZSUyMHByb3BlcnRpZXN8ZW58MHx8MHx8fDA%3D',
       type: 'Rent',
       category: 'houses'
     }
