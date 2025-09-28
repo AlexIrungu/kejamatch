@@ -26,9 +26,9 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Contact Section */}
-      <div className="py-16 bg-white">
+      <div className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="py-20 grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Left Side - Contact Info */}
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Contact</h1>

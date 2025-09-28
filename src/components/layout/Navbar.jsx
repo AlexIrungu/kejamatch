@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home as HomeIcon } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import logoClear from '../../assets/clearbg.svg';
+import logoBlack from '../../assets/clearblackbg.svg';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -32,16 +34,17 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="/" className="flex items-center group">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-lg blur-lg opacity-60 group-hover:opacity-100 transition-opacity"></div>
-              <div className="relative bg-gradient-to-r from-primary to-secondary p-2 rounded-lg">
-                <HomeIcon className="w-6 h-6 text-white" />
+              <div className="relative p-1">
+                <img 
+                  src={isScrolled ? logoClear : logoBlack} 
+                  alt="Kejamatch Logo" 
+                  className="h-24 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                />
               </div>
             </div>
-            <span className={`font-bold text-xl ${isScrolled ? 'text-primary' : 'text-white'}`}>
-              Kejamatch
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

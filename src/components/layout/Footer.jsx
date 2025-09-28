@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import logo from '../../assets/clearblackbg.svg';
 
 const Footer = () => {
   return (
@@ -8,9 +9,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div>
-            <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Kejamatch
-            </h3>
+            <div className="mb-4">
+              <img 
+                src={logo} 
+                alt="Kejamatch Logo" 
+                className="h-auto w-auto object-contain"
+              />
+            </div>
             <p className="text-gray-300 mb-4">
               Your trusted partner in finding the perfect property in Kenya.
             </p>

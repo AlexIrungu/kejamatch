@@ -1,289 +1,590 @@
-import React, { useState } from 'react';
-import { MapPin, Bed, Bath, Square, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useSearchParams } from 'react-router-dom';
+import { 
+  MapPin, 
+  Bed, 
+  Bath, 
+  Square, 
+  ChevronDown, 
+  Filter,
+  Search,
+  X,
+  Grid3X3,
+  List,
+  SlidersHorizontal,
+  ArrowUpDown,
+  Home,
+  Building,
+  Car,
+  Calendar
+} from 'lucide-react';
+
+// Import components and data
+import PropertyCard from '../components/properties/PropertyCard';
+import { properties, formatPrice, searchProperties, kenyanLocations } from '../data/properties';
 
 const Properties = () => {
-  const [priceRange, setPriceRange] = useState([2000, 84000000]);
-  const [selectedType, setSelectedType] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filteredProperties, setFilteredProperties] = useState(properties);
+  const [loading, setLoading] = useState(false);
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [selectedType, setSelectedType] = useState(searchParams.get('type') || '');
+  const [priceRange, setPriceRange] = useState([0, 100000000]);
   const [selectedCategories, setSelectedCategories] = useState({
-    apartments: false,
     houses: false,
+    apartments: false,
     offices: false,
     villas: false
   });
+  const [bedroomFilter, setBedroomFilter] = useState('');
+  const [bathroomFilter, setBathroomFilter] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
+  
+  // UI states
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
 
-  const properties = [
-    {
-      id: 1,
-      title: '2 Bedroom House for Rent',
-      location: 'Kapsoya, Eldoret',
-      price: 16000,
-      beds: 2,
-      baths: 2,
-      sqft: 440,
-      image: 'https://images.unsplash.com/photo-1592595896551-12b371d546d5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
-      type: 'Rent',
-      category: 'houses'
-    },
-    {
-      id: 2,
-      title: 'Luxury Apartments',
-      location: 'Kileleshwa',
-      price: 68000000,
-      beds: 3,
-      baths: 2,
-      sqft: 4655,
-      image: 'https://images.unsplash.com/photo-1565953522043-baea26b83b7e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
-      type: 'Rent',
-      category: 'apartments'
-    },
-    {
-      id: 3,
-      title: '4 bedroom house for sale in Pinnacle Point Golf Estate',
-      location: 'Kilimani',
-      price: 2000000,
-      beds: 4,
-      baths: 3,
-      sqft: 400,
-      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D',
-      type: 'Buy',
-      category: 'houses'
-    },
-    {
-      id: 4,
-      title: '4 bedroom house for sale in Karen',
-      location: 'Karen',
-      price: 3000000,
-      beds: 5,
-      baths: 2,
-      sqft: 500,
-      image: 'https://plus.unsplash.com/premium_photo-1734545294117-a910817d5961?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fHJlYWwlMjBlc3RhdGUlMjBwcm9wZXJ0aWVzfGVufDB8fDB8fHww',
-      type: 'Buy',
-      category: 'houses'
-    },
-    {
-      id: 5,
-      title: 'Riruta Urban Oasis',
-      location: 'Naivasha Road',
-      price: 2700000,
-      beds: 3,
-      baths: 2,
-      sqft: 600,
-      image: 'https://images.unsplash.com/photo-1635108199095-f2db38e6632e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzh8fHJlYWwlMjBlc3RhdGUlMjBwcm9wZXJ0aWVzfGVufDB8fDB8fHww',
-      type: 'Buy',
-      category: 'apartments'
-    },
-    {
-      id: 6,
-      title: '5 bedroom townhouse',
-      location: 'WestLands',
-      price: 84000000,
-      beds: 5,
-      baths: 1,
-      sqft: 700,
-      image: 'https://images.unsplash.com/photo-1723110994499-df46435aa4b3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVhbCUyMGVzdGF0ZSUyMHByb3BlcnRpZXN8ZW58MHx8MHx8fDA%3D',
-      type: 'Rent',
-      category: 'houses'
-    }
-  ];
+  // Initialize filters from URL params
+  useEffect(() => {
+    const urlSearch = searchParams.get('search');
+    const urlType = searchParams.get('type');
+    const urlLocation = searchParams.get('location');
+    
+    if (urlSearch) setSearchQuery(urlSearch);
+    if (urlType) setSelectedType(urlType.charAt(0).toUpperCase() + urlType.slice(1));
+    
+    // Apply initial filters
+    applyFilters();
+  }, []);
 
-  const formatPrice = (price) => {
-    if (price >= 1000000) {
-      return `KES ${(price / 1000000).toFixed(1)}M`.replace('.0M', 'M');
-    } else if (price >= 1000) {
-      return `KES ${(price / 1000).toFixed(0)}K`;
+  // Update location suggestions based on search
+  useEffect(() => {
+    if (searchQuery.trim() && searchQuery.length > 1) {
+      const filtered = kenyanLocations.filter(location =>
+        location.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 5);
+      setLocationSuggestions(filtered);
+      setShowLocationSuggestions(filtered.length > 0);
+    } else {
+      setLocationSuggestions([]);
+      setShowLocationSuggestions(false);
     }
-    return `KES ${price}`;
+  }, [searchQuery]);
+
+  // Apply all filters
+  const applyFilters = () => {
+    setLoading(true);
+    
+    let filtered = [...properties];
+
+    // Search query filter
+    if (searchQuery.trim()) {
+      filtered = searchProperties(searchQuery, selectedType);
+    }
+
+    // Type filter
+    if (selectedType && selectedType !== 'All') {
+      filtered = filtered.filter(property => property.type === selectedType);
+    }
+
+    // Category filter
+    const activeCategoryKeys = Object.keys(selectedCategories).filter(
+      key => selectedCategories[key]
+    );
+    if (activeCategoryKeys.length > 0) {
+      filtered = filtered.filter(property => 
+        activeCategoryKeys.includes(property.category)
+      );
+    }
+
+    // Price range filter
+    filtered = filtered.filter(property => 
+      property.price >= priceRange[0] && property.price <= priceRange[1]
+    );
+
+    // Bedroom filter
+    if (bedroomFilter) {
+      const bedCount = parseInt(bedroomFilter);
+      filtered = filtered.filter(property => {
+        if (bedroomFilter === '5+') {
+          return property.beds >= 5;
+        }
+        return property.beds === bedCount;
+      });
+    }
+
+    // Bathroom filter
+    if (bathroomFilter) {
+      const bathCount = parseInt(bathroomFilter);
+      filtered = filtered.filter(property => {
+        if (bathroomFilter === '3+') {
+          return property.baths >= 3;
+        }
+        return property.baths === bathCount;
+      });
+    }
+
+    // Sort properties
+    filtered = sortProperties(filtered, sortBy);
+
+    setTimeout(() => {
+      setFilteredProperties(filtered);
+      setLoading(false);
+    }, 300);
   };
 
-  const filteredProperties = properties.filter(property => {
-    const priceMatch = property.price >= priceRange[0] && property.price <= priceRange[1];
-    const typeMatch = !selectedType || property.type === selectedType;
-    const categoryMatch = !Object.values(selectedCategories).some(v => v) || 
-                          selectedCategories[property.category];
-    return priceMatch && typeMatch && categoryMatch;
-  });
+  // Sort properties
+  const sortProperties = (props, sortType) => {
+    switch (sortType) {
+      case 'price-low':
+        return props.sort((a, b) => a.price - b.price);
+      case 'price-high':
+        return props.sort((a, b) => b.price - a.price);
+      case 'beds':
+        return props.sort((a, b) => b.beds - a.beds);
+      case 'newest':
+      default:
+        return props.sort((a, b) => b.yearBuilt - a.yearBuilt);
+    }
+  };
+
+  // Apply filters when any filter changes
+  useEffect(() => {
+    applyFilters();
+  }, [selectedType, selectedCategories, priceRange, bedroomFilter, bathroomFilter, sortBy]);
+
+  // Handle search
+  const handleSearch = () => {
+    applyFilters();
+    setShowLocationSuggestions(false);
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setSelectedType('');
+    setPriceRange([0, 100000000]);
+    setSelectedCategories({
+      houses: false,
+      apartments: false,
+      offices: false,
+      villas: false
+    });
+    setBedroomFilter('');
+    setBathroomFilter('');
+    setSortBy('newest');
+    setSearchParams({});
+  };
+
+  // Handle location suggestion click
+  const handleLocationSelect = (location) => {
+    setSearchQuery(location.name);
+    setShowLocationSuggestions(false);
+    applyFilters();
+  };
+
+  // Get active filter count
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (selectedType) count++;
+    if (Object.values(selectedCategories).some(v => v)) count++;
+    if (priceRange[0] > 0 || priceRange[1] < 100000000) count++;
+    if (bedroomFilter) count++;
+    if (bathroomFilter) count++;
+    return count;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section 
-        className="relative h-[400px] bg-cover bg-center flex items-center justify-center"
-        style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/api/placeholder/1920/400')` }}
-      >
-        <div className="text-center text-white">
-          <h1 className="text-5xl font-bold">Properties</h1>
+      <section className="relative h-[900px] flex items-center justify-center overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-secondary/70 z-10"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&h=1080&auto=format&fit=crop&q=60" 
+            alt="Modern Properties" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 z-20">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ 
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl"
+          />
+        </div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-30">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+              Find Your Perfect <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">Property</span>
+            </h1>
+            <p className="text-xl text-white/90 mb-8">
+              Discover amazing properties across Kenya with our advanced search tools
+            </p>
+            
+            <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-2xl max-w-3xl mx-auto">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex gap-2">
+                  {['All', 'Buy', 'Rent', 'BNBs'].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedType(type === 'All' ? '' : type)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        (selectedType === type) || (type === 'All' && !selectedType)
+                          ? 'bg-gradient-to-r from-secondary to-accent text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    placeholder="Search location, property type..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => locationSuggestions.length > 0 && setShowLocationSuggestions(true)}
+                    className="w-full px-4 py-2 pr-12 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-secondary focus:bg-white"
+                  />
+                  <MapPin className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  
+                  {/* Location Suggestions */}
+                  {showLocationSuggestions && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
+                      {locationSuggestions.map((location, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleLocationSelect(location)}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3"
+                        >
+                          <MapPin size={16} className="text-secondary" />
+                          <span>{location.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <button
+                  onClick={handleSearch}
+                  className="bg-gradient-to-r from-secondary to-accent text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                >
+                  <Search size={18} />
+                  Search
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Properties Section */}
       <section className="py-12">
         <div className="container mx-auto px-4">
+          {/* Results Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
+          >
+            <div>
+              <h2 className="text-2xl font-bold text-primary mb-2">
+                {filteredProperties.length} Properties Found
+              </h2>
+              <p className="text-gray-600">
+                {searchQuery && `Showing results for "${searchQuery}"`}
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {/* Sort Dropdown */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-secondary appearance-none pr-10"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="beds">Most Bedrooms</option>
+                </select>
+                <ArrowUpDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+              </div>
+              
+              {/* View Mode Toggle */}
+              <div className="flex border border-gray-300 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 ${viewMode === 'grid' ? 'bg-secondary text-white' : 'bg-white text-gray-600 hover:bg-gray-50'} transition-colors`}
+                >
+                  <Grid3X3 size={18} />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 ${viewMode === 'list' ? 'bg-secondary text-white' : 'bg-white text-gray-600 hover:bg-gray-50'} transition-colors`}
+                >
+                  <List size={18} />
+                </button>
+              </div>
+              
+              {/* Mobile Filter Toggle */}
+              <button
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+                className="lg:hidden flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                <Filter size={18} />
+                Filters
+                {getActiveFilterCount() > 0 && (
+                  <span className="bg-accent text-primary px-2 py-1 rounded-full text-xs font-bold">
+                    {getActiveFilterCount()}
+                  </span>
+                )}
+              </button>
+            </div>
+          </motion.div>
+
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Filters Sidebar */}
-            <div className="lg:w-1/4">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-semibold mb-6">Filters</h3>
-                
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              className={`lg:w-1/4 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}
+            >
+              <div className="bg-white rounded-xl shadow-lg p-6 sticky top-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                    <SlidersHorizontal size={20} />
+                    Filters
+                  </h3>
+                  {getActiveFilterCount() > 0 && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="text-secondary hover:text-secondary/80 text-sm font-medium"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
                 {/* Property Type */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
                     Property Type
                   </label>
                   <div className="relative">
                     <select 
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-secondary bg-white"
                       value={selectedType}
                       onChange={(e) => setSelectedType(e.target.value)}
                     >
-                      <option value="">Select...</option>
-                      <option value="Buy">Buy</option>
-                      <option value="Rent">Rent</option>
+                      <option value="">All Types</option>
+                      <option value="Buy">For Sale</option>
+                      <option value="Rent">For Rent</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-500 pointer-events-none" />
-                  </div>
-                </div>
-
-                {/* Price Range */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price Range
-                  </label>
-                  <div className="space-y-2">
-                    <input 
-                      type="range" 
-                      min="2000" 
-                      max="84000000" 
-                      value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>KES 2,000</span>
-                      <span>KES 84,000,000</span>
-                    </div>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Categories */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Categories
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Property Categories
                   </label>
-                  <div className="space-y-2">
-                    <label className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2"
-                        checked={selectedCategories.apartments}
-                        onChange={(e) => setSelectedCategories({
-                          ...selectedCategories,
-                          apartments: e.target.checked
-                        })}
-                      />
-                      <span>Apartments</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2"
-                        checked={selectedCategories.houses}
-                        onChange={(e) => setSelectedCategories({
-                          ...selectedCategories,
-                          houses: e.target.checked
-                        })}
-                      />
-                      <span>Houses</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2"
-                        checked={selectedCategories.offices}
-                        onChange={(e) => setSelectedCategories({
-                          ...selectedCategories,
-                          offices: e.target.checked
-                        })}
-                      />
-                      <span>Offices</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2"
-                        checked={selectedCategories.villas}
-                        onChange={(e) => setSelectedCategories({
-                          ...selectedCategories,
-                          villas: e.target.checked
-                        })}
-                      />
-                      <span>Villas</span>
-                    </label>
+                  <div className="space-y-3">
+                    {[
+                      { key: 'apartments', label: 'Apartments', icon: Building },
+                      { key: 'houses', label: 'Houses', icon: Home },
+                      { key: 'offices', label: 'Offices', icon: Building },
+                      { key: 'villas', label: 'Villas', icon: Home }
+                    ].map(({ key, label, icon: Icon }) => (
+                      <label key={key} className="flex items-center group cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          className="sr-only"
+                          checked={selectedCategories[key]}
+                          onChange={(e) => setSelectedCategories({
+                            ...selectedCategories,
+                            [key]: e.target.checked
+                          })}
+                        />
+                        <div className={`w-5 h-5 border-2 rounded transition-all ${
+                          selectedCategories[key] 
+                            ? 'bg-secondary border-secondary' 
+                            : 'border-gray-300 group-hover:border-secondary'
+                        }`}>
+                          {selectedCategories[key] && (
+                            <svg className="w-3 h-3 text-white mx-auto mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="ml-3 flex items-center gap-2">
+                          <Icon size={16} className="text-gray-500" />
+                          <span className="text-gray-700 group-hover:text-primary transition-colors">{label}</span>
+                        </div>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
-                {/* Location */}
+                {/* Price Range */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Location
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Price Range
                   </label>
-                  <input 
-                    type="text" 
-                    placeholder="Search..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                  More Filters
-                </button>
-              </div>
-            </div>
-
-            {/* Properties Grid */}
-            <div className="lg:w-3/4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredProperties.map(property => (
-                  <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
-                    <div className="relative">
-                      <img src={property.image} alt={property.title} className="w-full h-64 object-cover" />
-                      <span className="absolute top-4 left-4 bg-white px-3 py-1 rounded-md text-sm font-semibold">
-                        {property.type}
+                  <div className="space-y-3">
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="100000000" 
+                      value={priceRange[1]}
+                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none slider"
+                    />
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>KES 0</span>
+                      <span className="font-medium text-secondary">
+                        {formatPrice(priceRange[1], 'Buy')}
                       </span>
                     </div>
-                    <div className="p-6">
-                      <h3 className="font-semibold text-xl mb-2">{property.title}</h3>
-                      <p className="text-gray-600 mb-4 flex items-center">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {property.location}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                        <span className="flex items-center">
-                          <Bed className="w-4 h-4 mr-1" />
-                          {property.beds} Beds
-                        </span>
-                        <span className="flex items-center">
-                          <Bath className="w-4 h-4 mr-1" />
-                          {property.baths} Baths
-                        </span>
-                        <span className="flex items-center">
-                          <Square className="w-4 h-4 mr-1" />
-                          {property.sqft}Sqft
-                        </span>
-                      </div>
-                      <p className="text-2xl font-bold text-blue-900">
-                        {formatPrice(property.price)}
-                      </p>
-                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
 
-              {/* Pagination dots */}
-              <div className="flex justify-center mt-8 space-x-2">
-                <span className="w-2 h-2 bg-blue-900 rounded-full"></span>
-                <span className="w-2 h-2 bg-gray-300 rounded-full"></span>
-                <span className="w-2 h-2 bg-gray-300 rounded-full"></span>
+                {/* Bedrooms */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Bedrooms
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['1', '2', '3', '4', '5+'].map((bed) => (
+                      <button
+                        key={bed}
+                        onClick={() => setBedroomFilter(bedroomFilter === bed ? '' : bed)}
+                        className={`py-2 px-3 text-sm rounded-lg border transition-all ${
+                          bedroomFilter === bed
+                            ? 'bg-secondary text-white border-secondary'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-secondary'
+                        }`}
+                      >
+                        {bed}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bathrooms */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Bathrooms
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['1', '2', '3+'].map((bath) => (
+                      <button
+                        key={bath}
+                        onClick={() => setBathroomFilter(bathroomFilter === bath ? '' : bath)}
+                        className={`py-2 px-3 text-sm rounded-lg border transition-all ${
+                          bathroomFilter === bath
+                            ? 'bg-secondary text-white border-secondary'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-secondary'
+                        }`}
+                      >
+                        {bath}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
+            </motion.div>
+
+            {/* Properties Grid/List */}
+            <div className="lg:w-3/4">
+              <AnimatePresence>
+                {loading ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center justify-center py-20"
+                  >
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mx-auto mb-4"></div>
+                      <p className="text-gray-600">Loading properties...</p>
+                    </div>
+                  </motion.div>
+                ) : filteredProperties.length > 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`grid gap-6 ${
+                      viewMode === 'grid' 
+                        ? 'grid-cols-1 md:grid-cols-2' 
+                        : 'grid-cols-1'
+                    }`}
+                  >
+                    {filteredProperties.map((property, index) => (
+                      <motion.div
+                        key={property.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={viewMode === 'list' ? 'w-full' : ''}
+                      >
+                        <PropertyCard 
+                          property={property} 
+                          viewMode={viewMode}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center py-20"
+                  >
+                    <div className="w-24 h-24 mx-auto mb-6 bg-gray-200 rounded-full flex items-center justify-center">
+                      <Home className="w-12 h-12 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-600 mb-4">No Properties Found</h3>
+                    <p className="text-gray-500 mb-6">
+                      Try adjusting your filters or search criteria to find more properties.
+                    </p>
+                    <button
+                      onClick={clearAllFilters}
+                      className="bg-secondary text-white px-6 py-3 rounded-lg hover:bg-secondary/90 transition-colors"
+                    >
+                      Clear All Filters
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
